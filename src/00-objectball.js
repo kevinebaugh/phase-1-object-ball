@@ -126,13 +126,18 @@ function allPlayers() {
   return allPlayers
 }
 
-function teamColors(teamName) {
+function getTeamObjFromGame(teamName) {
   const game = gameObject()
-  const gameColors = {
-    game["home"]["teamName"]: game["home"]["colors"],
-    game["away"]["teamName"]: game["away"]["colors"],
+  if (teamName == game["home"]["teamName"]) {
+    return game["home"]
+  } else {
+    return game["away"]
   }
-  return teamColors[teamName]
+}
+
+function teamColors(teamName) {
+  const team = getTeamObjFromGame(teamName)
+  return team.colors
 }
 
 function numPointsScored(player) {
@@ -141,4 +146,31 @@ function numPointsScored(player) {
 
 function shoeSize(player) {
   return allPlayers()[player]["shoe"]
+}
+
+function playerNumbers(teamName) {
+  const players = getTeamObjFromGame(teamName).players
+  const numbers = []
+  for (const player in players) {
+    numbers.push(players[player].number)
+  }
+  return numbers
+}
+
+function playerStats(playerName) {
+  return allPlayers()[playerName]
+}
+
+function bigShoeRebounds() {
+  const game = gameObject()
+  let biggestShoe = [0, {}] // start at zero, empty object to eventually be a player
+  for (let playerName in allPlayers()) {
+    let player = allPlayers()[playerName]
+    if (player.shoe > biggestShoe[0]) { // compare player's shoe to previous players shoe
+      console.log(`Looking up ${playerName}`)
+      biggestShoe[0] = player.shoe // if it's bigger, set the shoe size
+      biggestShoe[1] = player // if it's bigger, set the player
+    }
+  }
+  return biggestShoe[1].rebounds
 }
